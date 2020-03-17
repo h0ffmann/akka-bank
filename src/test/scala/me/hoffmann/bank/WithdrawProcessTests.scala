@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Heiko Seeberger
+ * Copyright 2020 Matheus Hoffmann
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package me.hoffmann.bank
 import akka.actor.typed.scaladsl.adapter.ClassicActorSystemOps
 import akka.actor.typed.scaladsl.Behaviors
 import akka.cluster.sharding.typed.scaladsl.TestEntityRef
-import akka.stream.scaladsl.{Sink, Source, SourceWithContext}
+import akka.stream.scaladsl.{ Sink, Source, SourceWithContext }
 import io.moia.streamee.Respondee
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AsyncWordSpec

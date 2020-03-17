@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Heiko Seeberger
+ * Copyright 2020 Matheus Hoffmann
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import akka.actor.typed.scaladsl.AskPattern.Askable
 import akka.actor.ActorRefProvider
 import akka.util.Timeout
 import scala.concurrent.Future
-
 
 /**
   * Testing utility. Because of package private access of `InternalRecipientRef` this class must
