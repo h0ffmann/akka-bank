@@ -72,7 +72,7 @@ object Main {
     AkkaManagement(classicSystem).start()
     ClusterBootstrap(classicSystem).start()
 
-    // Cassanra migration; piggyback on Cassandra session from Akka Persistence Cassandra plug-in
+    // Cassandra migration; piggyback on Cassandra session from Akka Persistence Cassandra plug-in
     // If successful, spawn main/guardian actor, else terminate the system
     import classicSystem.dispatcher
     cassandraSession(classicSystem)
@@ -137,7 +137,7 @@ object Main {
   private def cassandraSession(classicSystem: ClassicSystem): Future[Session] =
     cassandraReadJournal(classicSystem).session.underlying()
 
-  private def cassandraReadJournal(classicSystem: ClassicSystem) =
+  private def cassandraReadJournal(classicSystem: ClassicSystem): CassandraReadJournal =
     PersistenceQuery(classicSystem)
       .readJournalFor[CassandraReadJournal](CassandraReadJournal.Identifier)
 
