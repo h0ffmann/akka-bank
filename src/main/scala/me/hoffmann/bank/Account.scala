@@ -120,15 +120,3 @@ object Account {
   def withdraw(amount: Int)(replyTo: ActorRef[WithdrawReply]): Withdraw =
     Withdraw(amount, replyTo)
 }
-
-/**
-  * Extractor for the account ID (entity ID) from a `PersistenceId`.
-  */
-object AccountId {
-
-  def unapply(persistenceId: String): Option[String] =
-    persistenceId.split(s"\\${PersistenceId.DefaultSeparator}") match {
-      case Array(_, id) => Some(id)
-      case _            => None
-    }
-}

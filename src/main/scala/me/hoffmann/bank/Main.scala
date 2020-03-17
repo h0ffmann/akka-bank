@@ -37,8 +37,9 @@ import com.datastax.driver.core.Session
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 import org.cognitor.cassandra.migration.{ Database, MigrationRepository, MigrationTask }
 import org.cognitor.cassandra.migration.keyspace.Keyspace
-import pureconfig.generic.auto.exportReader
 import pureconfig.ConfigSource
+import pureconfig.generic.auto.exportReader
+import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
 /**
@@ -133,14 +134,14 @@ object Main {
       }
     }
 
-  private def cassandraSession(classicSystem: ClassicSystem) =
+  private def cassandraSession(classicSystem: ClassicSystem): Future[Session] =
     cassandraReadJournal(classicSystem).session.underlying()
 
   private def cassandraReadJournal(classicSystem: ClassicSystem) =
     PersistenceQuery(classicSystem)
       .readJournalFor[CassandraReadJournal](CassandraReadJournal.Identifier)
 
-  private def runCassandraMigration(session: Session) = {
+  private def runCassandraMigration(session: Session): Unit = {
     val database  = new Database(session.getCluster, new Keyspace(Name))
     val migration = new MigrationTask(database, new MigrationRepository)
     migration.migrate()

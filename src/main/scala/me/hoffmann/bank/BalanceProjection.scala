@@ -40,7 +40,7 @@ object BalanceProjection {
 
   final case class Config(minBackoff: FiniteDuration, maxBackoff: FiniteDuration)
 
-  private[akkounts] final case class IllegalSeqNo(seqNo: Long, lastSeqNo: Long)
+  private[bank] final case class IllegalSeqNo(seqNo: Long, lastSeqNo: Long)
       extends IllegalStateException(s"Expected last seqNo ${seqNo - 1}, but was $lastSeqNo!")
 
   def apply(
@@ -69,7 +69,7 @@ object BalanceProjection {
         }
     }
 
-  private[akkounts] def projection(
+  private[bank] def projection(
       balanceDao: BalanceDao,
       readJournal: EventsByTagQuery
   )(implicit ec: ExecutionContext, logger: Logger): Source[Unit, NotUsed] =

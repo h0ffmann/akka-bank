@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package me.hoffmann.bank.proto
+package me.hoffmann.bank
+package proto
 
 import akka.actor.typed.{ ActorRef, ActorRefResolver }
 import akka.actor.typed.scaladsl.adapter.ClassicActorSystemOps
 import akka.actor.ExtendedActorSystem
 import akka.serialization.SerializerWithStringManifest
 import java.io.NotSerializableException
-
 import me.hoffmann.bank.proto.account.{
   Deposit => DepositProto,
   Deposited => DepositedProto,
@@ -32,7 +32,7 @@ import me.hoffmann.bank.proto.account.{
 }
 
 final class AccountSerializer(system: ExtendedActorSystem) extends SerializerWithStringManifest {
-  import me.hoffmann.bank.Account._
+  import Account._
 
   override val identifier: Int =
     SerializerIdentifier.Account
@@ -80,21 +80,21 @@ final class AccountSerializer(system: ExtendedActorSystem) extends SerializerWit
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
-    def deposit(proto: Deposit) = {
+    def deposit(proto: DepositProto) = {
       import proto._
       Deposit(amount, resolve(replyTo))
     }
-    def deposited(proto: Deposited) = Deposited(proto.amount)
-    def withdraw(proto: Withdraw) = {
+    def deposited(proto: DepositedProto): Deposited = Deposited(proto.amount)
+    def withdraw(proto: WithdrawProto): Withdraw = {
       import proto._
       Withdraw(amount, resolve(replyTo))
     }
-    def insufficientBalance(proto: InsufficientBalance) = {
+    def insufficientBalance(proto: InsufficientBalanceProto): InsufficientBalance = {
       import proto._
       InsufficientBalance(amount, balance)
     }
-    def withdrawn(proto: Withdrawn)         = Withdrawn(proto.amount)
-    def invalidAmount(proto: InvalidAmount) = InvalidAmount(proto.amount)
+    def withdrawn(proto: WithdrawnProto): Withdrawn             = Withdrawn(proto.amount)
+    def invalidAmount(proto: InvalidAmountProto): InvalidAmount = InvalidAmount(proto.amount)
     manifest match {
       case DepositMf             => deposit(DepositProto.parseFrom(bytes))
       case DepositedMf           => deposited(DepositedProto.parseFrom(bytes))
@@ -106,7 +106,7 @@ final class AccountSerializer(system: ExtendedActorSystem) extends SerializerWit
     }
   }
 
-  private def serialize[A](ref: ActorRef[A]) = actorRefResolver.toSerializationFormat(ref)
+  private def serialize[A](ref: ActorRef[A]): String = actorRefResolver.toSerializationFormat(ref)
 
-  private def resolve[A](s: String) = actorRefResolver.resolveActorRef[A](s)
+  private def resolve[A](s: String): ActorRef[A] = actorRefResolver.resolveActorRef[A](s)
 }
